@@ -8,12 +8,13 @@
 #include <log.h>
 #include <term.h>
 
-struct term *term_new(term_type_t type)
+struct term *term_new(term_type_t type, hash_t hash)
 {
-	struct term *term = malloc(sizeof(*term));
+	struct term *term = calloc(sizeof(*term), 1);
 	if (!term)
 		fatal("out of memory!\n");
 	term->type = type;
+	term->hash = hash;
 	return term;
 }
 

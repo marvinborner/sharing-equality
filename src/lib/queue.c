@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include <queue.h>
+#include <lib/queue.h>
 #include <log.h>
 
 struct queue *queue_new(void)
@@ -53,4 +53,9 @@ void *queue_pop(struct queue *queue)
 	void *data = node->data;
 	free(node);
 	return data;
+}
+
+int queue_empty(struct queue *queue)
+{
+	return !queue->head;
 }

@@ -6,15 +6,24 @@
 
 #include <stddef.h>
 
-#include <queue.h>
+#include <lib/hash.h>
+#include <lib/queue.h>
 
 typedef enum { INV, ABS, APP, VAR } term_type_t;
 
+struct term_handle {
+	struct term *term;
+	hash_t hash;
+};
+
 struct term {
 	term_type_t type;
+	hash_t hash;
 	struct term *canonic;
 	char building;
 	struct queue *queue;
+	struct list *parents;
+	struct list *neighbours;
 	union {
 		struct {
 			struct term *term;
@@ -29,7 +38,7 @@ struct term {
 	} u;
 };
 
-struct term *term_new(term_type_t type);
+struct term *term_new(term_type_t type, hash_t hash);
 void term_free(struct term *term);
 void term_print(struct term *term);
 

@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <sharing.h>
+#include <map.h>
 #include <parse.h>
 #include <log.h>
 
@@ -47,14 +49,14 @@ int main(int argc, char *argv[])
 		fatal("usage: %s <file>\n", argc ? argv[0] : "sharing");
 
 	char *term = read_path(argv[1]);
+	map_initialize();
 
 	char *orig_term = term;
-	struct term *parsed = parse_blc(&term);
+	parse_blc(&term);
 	free(orig_term);
 
-	term_print(parsed);
-	fprintf(stderr, "\n");
+	blind_check();
 
-	term_free(parsed);
+	map_destroy();
 	return 0;
 }

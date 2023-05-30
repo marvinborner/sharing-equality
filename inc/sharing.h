@@ -1,11 +1,11 @@
 // Copyright (c) 2023, Marvin Borner <dev@marvinborner.de>
 // SPDX-License-Identifier: MIT
 
-#ifndef SHARING_PARSE_H
-#define SHARING_PARSE_H
+#ifndef SHARING_SHARING_H
+#define SHARING_SHARING_H
 
 #include <term.h>
 
-struct term_handle parse_blc(char **term);
+void blind_check(void);
 
 #endif
