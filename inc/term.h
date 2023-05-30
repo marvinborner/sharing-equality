@@ -6,12 +6,15 @@
 
 #include <stddef.h>
 
+#include <queue.h>
+
 typedef enum { INV, ABS, APP, VAR } term_type_t;
 
 struct term {
 	term_type_t type;
-	size_t refs;
-	size_t depth;
+	struct term *canonic;
+	char building;
+	struct queue *queue;
 	union {
 		struct {
 			struct term *term;
