@@ -6,6 +6,6 @@
 
 #include <term.h>
 
-void blind_check(void);
+void sharing_query(struct term *a, struct term *b);
 
 #endif

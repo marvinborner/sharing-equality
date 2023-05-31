@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	parse_blc(&term);
 	free(orig_term);
 
-	blind_check();
+	// sharing_query(a, b);
 
 	map_destroy();
 	return 0;

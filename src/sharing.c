@@ -31,7 +31,7 @@ static void enqueue_and_propagate(struct term *neighbour, struct term *term)
 			term->u.app.rhs->neighbours, neighbour->u.app.rhs);
 	} else if (neighbour->type == VAR && term->type == VAR) {
 	} else {
-		fatal("huh3?\n");
+		fatal("query failed\n");
 	}
 	neighbour->canonic = term;
 	queue_push(term->queue, neighbour);
@@ -54,7 +54,7 @@ static void build_equivalence_class(struct term *term)
 			if (!parent->canonic) {
 				build_equivalence_class(parent);
 			} else if (parent->canonic->building) {
-				fatal("huh?\n");
+				fatal("query failed\n");
 			}
 			iterator = iterator->next;
 		}
@@ -65,7 +65,7 @@ static void build_equivalence_class(struct term *term)
 			if (!neighbour->canonic) {
 				enqueue_and_propagate(neighbour, term);
 			} else if (neighbour->canonic != term) {
-				fatal("huh2?\n");
+				fatal("query failed\n");
 			}
 		}
 	}
@@ -73,7 +73,7 @@ static void build_equivalence_class(struct term *term)
 	term->building = 0;
 }
 
-static void iter_callback(struct term *term)
+static void blind_check_callback(struct term *term)
 {
 	if (term->canonic)
 		return;
@@ -81,7 +81,38 @@ static void iter_callback(struct term *term)
 }
 
 // Procedure BlindCheck()
-void blind_check(void)
+static void blind_check(void)
 {
-	map_foreach(iter_callback);
+	map_foreach(blind_check_callback);
+}
+
+static void var_check_callback(struct term *term)
+{
+	if (term->type != VAR)
+		return;
+	struct term *canonic = term->canonic;
+	if (canonic != term) {
+		// you should compare the binders as stated in the paper.
+		// due to the implementation I just compare the indices directly
+		if (canonic->u.var.index != term->u.var.index) {
+			fatal("query failed\n");
+		}
+	}
+}
+
+// Procedure VarCheck()
+static void var_check(void)
+{
+	map_foreach(var_check_callback);
+}
+
+// this doesn't really make sense for this specific implementation of
+// λ-graphs using hashes. It's a reference implementation after all.
+void sharing_query(struct term *a, struct term *b)
+{
+	a->neighbours = list_add(a->neighbours, b);
+	b->neighbours = list_add(b->neighbours, a);
+
+	blind_check();
+	var_check();
 }
